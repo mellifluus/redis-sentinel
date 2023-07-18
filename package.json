@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "helm delete redis || true && helm install redis -f values.yaml oci://registry-1.docker.io/bitnamicharts/redis && echo \"\nSleeping for one minute, to allow the three instances of redis to startup...\n\" && sleep 60 && kubectl delete deployment test-app || true && kubectl apply -f deployment.yaml",
+    "dev": "helm delete redis || true && helm repo add bitnami https://charts.bitnami.com/bitnami && helm install redis -f values.yaml oci://registry-1.docker.io/bitnamicharts/redis && echo \"\nSleeping for one minute, to allow the three instances of redis to startup...\n\" && sleep 60 && kubectl delete deployment test-app || true && kubectl apply -f deployment.yaml",
     "startcount": "kubectl exec -it $(kubectl get pod -l app=test-app -o jsonpath=\"{.items[0].metadata.name}\") -- curl localhost:3000/start",
     "stopcount": "kubectl exec -it $(kubectl get pod -l app=test-app -o jsonpath=\"{.items[0].metadata.name}\") -- curl localhost:3000/stop",
     "reset": "kubectl exec -it $(kubectl get pod -l app=test-app -o jsonpath=\"{.items[0].metadata.name}\") -- curl localhost:3000/reset",

@@ -33,26 +33,26 @@ fastify.get('/start', async (req, res) => {
     redis.set(count, 'test')
     count++
   }, 50)
-  res.send('Start inserting data to redis')
+  res.send('Start inserting data to redis\n')
 })
 
 fastify.get('/stop', (req, res) => {
   clearInterval(interval)
-  res.send('Stop inserting data to redis')
+  res.send('Stop inserting data to redis\n')
 })
 
 fastify.get('/check', async (req, res) => {
   const keys = await redis.keys('*')
   const sortedKeys = keys.map((key) => parseInt(key)).sort((a, b) => a - b)
   const missingKeys = findMissing(sortedKeys)
-  res.send(`Missing keys: ${missingKeys}`)
+  res.send(`Amount of keys: ${sortedKeys.length}, missing keys: ${missingKeys.length ? missingKeys : 'none'}\n`)
 })
 
 fastify.get('/reset', async (req, res) => {
   const keys = await redis.keys('*')
   await redis.del(keys)
   count = 0
-  res.send('Reset redis')
+  res.send('Reset redis\n')
 })
 
 fastify.listen(3000, function (err, address) {
