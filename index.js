@@ -48,6 +48,13 @@ fastify.get('/check', async (req, res) => {
   res.send(`Missing keys: ${missingKeys}`)
 })
 
+fastify.get('/reset', async (req, res) => {
+  const keys = await redis.keys('*')
+  await redis.del(keys)
+  count = 0
+  res.send('Reset redis')
+})
+
 fastify.listen(3000, function (err, address) {
   if (err) {
     fastify.log.error(err)
