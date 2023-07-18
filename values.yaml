@@ -1,0 +1,5 @@
+sentinel:
+  enabled: true
+  downAfterMilliseconds: 3000
+auth:
+  enabled: false

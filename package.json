@@ -1,0 +1,22 @@
+{
+  "name": "k8s",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "helm delete redis || true && helm install redis -f values.yaml oci://registry-1.docker.io/bitnamicharts/redis && echo \"\nSleeping for one minute, to allow the three instances of redis to startup...\n\" && sleep 60 && kubectl delete deployment test-app || true && kubectl apply -f deployment.yaml",
+    "startcount": "kubectl exec -it $(kubectl get pod -l app=test-app -o jsonpath=\"{.items[0].metadata.name}\") -- curl localhost:3000/start",
+    "stopcount": "kubectl exec -it $(kubectl get pod -l app=test-app -o jsonpath=\"{.items[0].metadata.name}\") -- curl localhost:3000/stop",
+    "check": "kubectl exec -it $(kubectl get pod -l app=test-app -o jsonpath=\"{.items[0].metadata.name}\") -- curl localhost:3000/check",
+    "getmaster": "kubectl exec -it redis-node-0 --container sentinel -- redis-cli -p 26379 sentinel get-master-addr-by-name mymaster | grep -o \"redis-node-[0-9]\" | tr -d '\r'",
+    "killmaster": "kubectl exec -it $(npm run -s getmaster) --container redis -- redis-cli shutdown",
+    "push": "docker build -t massiricci/testimg:latest . && docker push massiricci/testimg:latest && kubectl delete deployment test-app && kubectl apply -f deployment.yaml"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^4.20.0",
+    "ioredis": "^5.3.2"
+  }
+}
